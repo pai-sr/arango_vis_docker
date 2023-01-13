@@ -1,0 +1,23 @@
+version : '3'
+services:
+  nginx:
+    container_name: nginx_arango
+    build: ./arango_vis_web
+    image: docker/nginx
+    restart: always
+    ports:
+      - "8081:81"
+    volumes:
+      - ./arango_vis:/srv/django:z
+      - ./log:/var/log/nginx:z
+    depends_on:
+      - django
+  django:
+    container_name: django_arango
+    build: ./arango_vis
+    image: docker/django
+    restart: always
+    command: uwsgi --ini /srv/django/uwsgi.ini
+    volumes:
+      - ./arango_vis:/srv/django:z
+      - ./arango_vis:/var/log/uwsgi:z
